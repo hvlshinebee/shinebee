@@ -107,26 +107,52 @@
   background: hsla(0, 0%, 80%, .14);
 }
 
+
+
+
+
 </style>
+
+
+
 
 
     
     <body class="bg-light">
 
 <?php
+
+function get_client_ip() {
+    $ip_address = '';
+    if (!empty($_SERVER['HTTP_CLIENT_IP']))   
+    {
+      $ip_address = $_SERVER['HTTP_CLIENT_IP'];
+    }
+  //whether ip is from proxy
+  elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR']))  
+    {
+      $ip_address = $_SERVER['HTTP_X_FORWARDED_FOR'];
+    }
+  //whether ip is from remote address
+  else
+    {
+      $ip_address = $_SERVER['REMOTE_ADDR'];
+    }
+    return $ip_address;
+}
 	//echo "Uploading..";
-	
+	include 'topheader.php';
 		session_start();
 									
-	if(isset($_SESSION['user_email']))
-	{
-		$user = $_SESSION['user_email'];
-	}
-	else
-	{
-		echo '<script> alert("Please login to proceed further")</script>';
-		header("Location:login.php"); 
-	}
+//	if(isset($_SESSION['user_email']))
+//	{
+    $user =get_client_ip();
+//	}
+//	else
+//	{
+//		echo '<script> alert("Please login to proceed further")</script>';
+//	//	header("Location:z_upload_and_see.php"); 
+//	}
 	
 	$last_id = "";
 
@@ -164,7 +190,7 @@
 				}
 				
 				
-			$insert_sql = "insert into user_upload_and_practise(user_id, filename, path) VALUES ('$user', '$filename', '$path')";
+			$insert_sql = "insert into z_user_upload_and_practise(ip_id, filename, path) VALUES ('$user', '$filename', '$path')";
 		
 			$insertUpdateResult = mysqli_query($connection, $insert_sql);
 
@@ -174,12 +200,12 @@
 			
 			//header("Location: $link");
 			
-			include 'topheader.php';
+		
 			?>
 			
 			<div class="container-fluid">
 			
-					<form class="form" action="upload_and_practise_result.php" method="post">
+					<form class="form" action="z_upload_practice_result.php" method="post">
                     <div class="row">
 						<input type="hidden" name="file_id" value="<?php echo $last_id; ?>" />
 						<span style="text-align:center"><h2>Upload and Practise</h2></span>
@@ -188,7 +214,7 @@
 						
 						<div class="col-sm-9" style="border: 1px solid grey; height: 400px; overflow: scroll; border-radius:3px">
 							<iframe src="<?php echo $path; ?>"
-   width="100%" height="600"> </iframe>
+   width="100%" height="600" frameborder="0" allowfullscreen="" style="position:absolute; top:0; left: 0"> </iframe>
 							
 							<input type="text" name="filename" class="form-control" value="<?php echo $filename; ?>">
 						</div>
@@ -228,7 +254,7 @@
 										echo ' </div>';
 										echo ' <div class="col-sm-2"> <label class="rad-label">';
 											echo '<input type="radio" class="rad-input"  id="option'.$x.'" name="answer_'.$x.'" value="A">';
-										echo '<div class="rad-design-ans"></div> &nbspA </label></div>';
+										echo '<div class="rad-design-ans"></div> &nbspA</label></div>';
 										
 										echo '<div class="col-sm-2"><label class="rad-label"> ';
 											echo '<input type="radio" class="rad-input" id="option'.$x.'" name="answer_'.$x.'" value="B">';
@@ -240,7 +266,7 @@
 										
 										echo '<div class="col-sm-2"> <label class="rad-label">';
 											echo '<input type="radio" class="rad-input"  id="option'.$x.'" name="answer_'.$x.'" value="D">';
-										echo '<div class="rad-design-ans"></div> &nbspD </label> </div>';
+										echo '<div class="rad-design-ans"></div>  &nbspD</label> </div>';
 										
 										echo '<div class="col-sm-2"> <label class="rad-label">';
 											echo '<input type="radio" class="rad-input"  id="option'.$x.'" name="answer_'.$x.'" value="E">';

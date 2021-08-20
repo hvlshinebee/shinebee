@@ -27,15 +27,15 @@
 
 	session_start();
 									
-	if(isset($_SESSION['user_email']))
-	{
-		$user = $_SESSION['user_email'];
-	}
-	else
-	{
-		echo '<script> alert("Please login to proceed further")</script>';
-		header("Location:login.php"); 
-	}
+//	if(isset($_SESSION['user_email']))
+//	{
+    $user =$_SERVER['REMOTE_ADDR'];
+//	}
+//	else
+//	{
+//		echo '<script> alert("Please login to proceed further")</script>';
+//		header("Location:login.php"); 
+//	}
 	
 	
 				$servername = "localhost";
@@ -44,6 +44,8 @@
 				$db = "db1";
 				$connection = mysqli_connect($servername, $username, $password,$db);
 				
+			
+				
 				if($connection === false)
 				{
 					die("ERROR: Could not connect. " . mysqli_connect_error());
@@ -51,22 +53,51 @@
 				
 				
 				$x = 1;
-					
-				$file_id = $_POST['file_id'];
-
-				$result2 = mysqli_query($connection, "SELECT MAX(file_id) FROM upload_answer ");
-                $row = mysqli_fetch_array($result2);
-              	
-				$new_file_id= $row[0]+1;	
+				#echo "<br/><h2>Result of the attempt</h2><br/>";
 				
-				$_SESSION['file_id'] = $new_file_id;
+				#echo '<div class="row">';
+						
+						
+						#echo '<div class="col-sm-2">';
+							#echo 'Attempted choice';
+						#echo '</div>';
+					#echo '</div>';
+					
+				$file_id = $_SESSION['file_id'];
 
+				#echo 'file_id ->'. $file_id. '<br/>';
+
+				$full_marks = $_POST['full_marks'];
+				$negative_marks = $_POST['negative_marks'];
+
+				#echo 'negative_marks ->'. $negative_marks. '<br/>';
+
+				#echo 'full_marks ->'. $full_marks. '<br/>';
+
+				$sql_update = "update z_user_upload_and_practise_answer_file set full_marks=$full_marks, negative_marks=$negative_marks where file_id=$file_id";
+
+				$UpdateResult = mysqli_query($connection, $sql_update);
+					
 				while($x <= 100) 
 				{
-				
+					#echo '<div class="row">';
+						
+						
+						#echo '<div class="col-sm-2">';
+							#echo $x.') '. $_POST['answer_'.$x];
+						#echo '</div>';
+					#echo '</div>';
+					
 					$answer = $_POST['answer_'.$x] ?? NULL;
 
-					$sql = "insert into upload_answer(file_id,question_number,answer_opted) values ('$new_file_id', $x, '$answer')";
+					if($answer == 'Correct')
+						 $is_correct=1;
+					else if ($answer == 'Incorrect')	
+						 $is_correct=0;
+					else 
+						 $is_correct=NULL;
+						 
+					$sql = "update z_upload_answer set is_correct = $is_correct where file_id =$file_id and question_number = $x";
 
 					$insertUpdateResult = mysqli_query($connection, $sql);
 
@@ -137,24 +168,93 @@
 			?>
 
 			<div class="container-fluid">
-                    <div class="row" width="100%" height="600px">
-					
-						<span style="text-align:center; color:green"><h2>Congratulations!! you have submitted your response</h2></span> <br/>
-						<span style="text-align:center"><h2>Now Upload You answer sheet and compare</h2></span>
-						<br/>
-						<input type="hidden" name="file_id" value="<?php echo $file_id; ?>" />
-						<br/>
-						<div class="row">
-							<form class="form" action="upload_and_see_answer.php" method="post" enctype="multipart/form-data" >
-								<div class="col-sm-3">
-								<input type="file" name="photo" id="fileSelect" class="form-control">
-								</div>
-								<div class="col-sm-3">
-								<input type="submit" name="submit" value="Upload" class="btn btn-primary">
-								</div>
-							</form>
-							
-						</div>
+				<br/>
+                    <div class="row">
+						
+						<span style="text-align:center"><h2>Marks distribution</h2></span><br/><br/>
+						
+						<?php 
+
+		$sql = "select * from z_upload_answer where file_id=$file_id";
+
+		//$user = 'Manish'; //take it from session
+		
+        $result = mysqli_query($connection, $sql);
+
+        echo "<table border='1' class='table'>
+			<tr>
+			<th>Question Number</th>
+			<th>Answer Opted</th>
+			<th>Correct Answer</th>
+			<th>Marks Obtaiined</th>
+			</tr>";
+
+		$marks = 0;
+
+        while ($row = mysqli_fetch_assoc($result))
+        {
+			
+            $question_number = $row['question_number'];
+            $answer_opted =  $row['answer_opted'];
+            $is_correct =  $row['is_correct'];
+
+			if($is_correct == 1) 
+				$correct_display='Correct';
+			else if($is_correct == NULL) 
+				$correct_display='Save later / DNA';
+			else 
+				$correct_display='Incorrect';
+
+            echo "<tr>";
+			echo "<td>" . $question_number . "</td>";
+			echo "<td>" . $answer_opted . "</td>";
+			echo "<td>" . $correct_display . "</td>";
+
+			$marks_obtained = 0;
+
+			if(empty($answer_opted))
+			{
+
+			}
+		#	else if(empty($is_correct))
+		#	{
+
+		#	}
+			else if($is_correct == 1)
+			{
+				$marks_obtained = $full_marks;
+				$marks = $marks + $marks_obtained;
+			}
+			else if($answer_opted == 'E')
+			{
+				$marks_obtained = 0;
+			}
+			else if($is_correct == 0)
+			{
+				$marks_obtained = -1 * $negative_marks;
+				$marks = $marks + $marks_obtained;
+			}
+
+
+			echo "<td>" . $marks_obtained . "</td>";
+
+			echo "</tr>";
+			
+        }
+
+        echo "</table>";
+
+		
+        echo "<br/>";
+        echo "<br/>";
+        echo '<h2>Total Marks Obtained :'.$marks.' </h2>'
+
+
+
+		
+						?>
+					  <a href="generate_download_pdf.php" class=" btn btn-success" style="background:white; color:black"><i class="fa fa-download" aria-hidden="true"></i> Download ANSWER REPORTS</a>
+	
 					</div>
 					<br/>
                 </div>

@@ -22,19 +22,19 @@
     </head>
     <body>
 
-				<?php include 'topheader.php';
-								session_start();
+				<?php include 'topheader.php'; 
+				//session_start();
 									
-									if(isset($_SESSION['user_email']))
-									{
-										$user = $_SESSION['user_email'];
-									}
-									else
-									{
-										echo '<script> alert("Please login to proceed further")</script>';
-										header("Location:z_upload_and_practice.php"); 
-									}
-									 ?>
+							//		if(isset($_SESSION['user_email']))
+								//	{
+                                    $user =$_SERVER['REMOTE_ADDR'];
+								//	}
+								//	else
+								//	{
+								//		echo '<script> alert("Please login to proceed further")</script>';
+								//		header("Location:z_upload_and_practice.php"); 
+								//	}
+								?>	
                 <!-- Page content-->
 				<br/>
                 <div class="container-fluid">
@@ -43,22 +43,17 @@
 					<br/>
 						<span style="text-align:center"><h2>Workbook Upload</h2></span>
 						<br/>
-						<form class="form" action="upload_and_see.php" method="post" enctype="multipart/form-data" >
 						<div class="row">
-							
+							<form class="form" action="z_upload_and_see.php" method="post" enctype="multipart/form-data" >
 								<div class="col-sm-3">
-									<input type="file" name="photo" id="fileSelect" class="form-control">
-								</div>
-
-								
-
-								<div class="col-sm-3">
+								<input type="file" name="photo" id="fileSelect" class="form-control">
+							</div>
+							<div class="col-sm-3">
 								<input type="submit" name="submit" value="Upload" class="btn btn-primary">
 								</div>
-							
+							</form>
 							
 						</div>
-						</form>
 					</div>
 					<br/>
                 </div>
@@ -69,13 +64,6 @@
         <!-- Core theme 
         <script src="js/scripts.js"></script> JS-->
 		
-		<br/>
-		<br/>
-
-		<br/>
-		<br/>
-		<br/>
-		<br/>
 		<br/>
 		<br/>
 		

@@ -25,24 +25,21 @@
 <?php
 	include 'topheader.php';
 
-	session_start();
+	 session_start();
 									
-	if(isset($_SESSION['user_email']))
-	{
-		$user = $_SESSION['user_email'];
-	}
-	else
-	{
-		echo '<script> alert("Please login to proceed further")</script>';
-		header("Location:login.php"); 
-	}
-	
+	//if(isset($_SESSION['user_email']))
+//	{
+		$user =$_SERVER['REMOTE_ADDR'];
+//	}
+
 	
 				$servername = "localhost";
 				$username = "hvlias";
 				$password = "hvlias@123";
 				$db = "db1";
 				$connection = mysqli_connect($servername, $username, $password,$db);
+				
+				//$user = 'Manish';
 				
 				if($connection === false)
 				{
@@ -51,22 +48,33 @@
 				
 				
 				$x = 1;
-					
-				$file_id = $_POST['file_id'];
-
-				$result2 = mysqli_query($connection, "SELECT MAX(file_id) FROM upload_answer ");
-                $row = mysqli_fetch_array($result2);
-              	
-				$new_file_id= $row[0]+1;	
+				#echo "<br/><h2>Result of the attempt</h2><br/>";
 				
-				$_SESSION['file_id'] = $new_file_id;
+				#echo '<div class="row">';
+						
+						
+						#echo '<div class="col-sm-2">';
+							#echo 'Attempted choice';
+						#echo '</div>';
+					#echo '</div>';
+					
+				$file_id = $_SESSION['file_id'];
 
+				#echo 'file_id ->'. $file_id;
+					
 				while($x <= 100) 
 				{
-				
+					#echo '<div class="row">';
+						
+						
+						#echo '<div class="col-sm-2">';
+							#echo $x.') '. $_POST['answer_'.$x];
+						#echo '</div>';
+					#echo '</div>';
+					
 					$answer = $_POST['answer_'.$x] ?? NULL;
 
-					$sql = "insert into upload_answer(file_id,question_number,answer_opted) values ('$new_file_id', $x, '$answer')";
+					$sql = "insert into z_upload_answer(file_id,question_number,answer_opted) values ( '$file_id', $x, '$answer')";
 
 					$insertUpdateResult = mysqli_query($connection, $sql);
 
@@ -145,7 +153,7 @@
 						<input type="hidden" name="file_id" value="<?php echo $file_id; ?>" />
 						<br/>
 						<div class="row">
-							<form class="form" action="upload_and_see_answer.php" method="post" enctype="multipart/form-data" >
+							<form class="form" action="z_upload_and_see_answer.php" method="post" enctype="multipart/form-data" >
 								<div class="col-sm-3">
 								<input type="file" name="photo" id="fileSelect" class="form-control">
 								</div>

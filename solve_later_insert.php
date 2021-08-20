@@ -103,7 +103,7 @@
 					else 
 						 $is_correct=NULL;
 						 
-					$sql = "update upload_answer set is_correct = $is_correct where file_id =$file_id and question_number = $x";
+					$sql = "update upload_answer set is_correct = $is_correct where file_id =$newfile_id and question_number = $x";
 
 					$insertUpdateResult = mysqli_query($connection, $sql);
 

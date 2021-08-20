@@ -113,18 +113,18 @@
 
 <?php
 	//echo "Uploading..";
-	
+	include 'topheader.php';
 		session_start();
 									
-	if(isset($_SESSION['user_email']))
-	{
-		$user = $_SESSION['user_email'];
-	}
-	else
-	{
-		echo '<script> alert("Please login to proceed further")</script>';
-		header("Location:login.php"); 
-	}
+//	if(isset($_SESSION['user_email']))
+//	{
+	$user =$_SERVER['REMOTE_ADDR'];
+//	}
+//	else
+//	{
+//		echo '<script> alert("Please login to proceed further")</script>';
+//		header("Location:login.php"); 
+//	}
 	
 	$last_id = "";
 	$servername = "localhost";
@@ -135,7 +135,7 @@
 	
 	$file_id = $_SESSION['file_id'];
 
-	$sql = "select * from upload_answer where file_id=$file_id";
+	$sql = "select * from z_upload_answer where file_id=$file_id";
 
 	//$user = 'Manish'; //take it from session
 	
@@ -156,15 +156,15 @@
 		$filename = basename( $_FILES['photo']['name']) ;
  
 		
-//		$file_id = $_SESSION['file_id'];
-        $newfile_id= $_SESSION['newfile_id'];
+		$file_id = $_SESSION['file_id'];
+
 		#echo 'file_id ->'. $file_id;
 
 		if(move_uploaded_file($_FILES['photo']['tmp_name'], $targetfolder))
 		{
 			//echo "The file ". basename( $_FILES['file']['name']). " is uploaded";
 			
-			$path = "http://localhost/shineb/".$targetfolder;
+			$path = "https://www.shineb.in/".$targetfolder;
 			
 				$servername = "localhost";
 				$username = "hvlias";
@@ -178,20 +178,20 @@
 				}
 				
 				
-			$insert_sql = "insert into user_upload_and_practise_answer_file(file_id, filename, path) VALUES ('$newfile_id', '$filename', '$path')";
+			$insert_sql = "insert into z_user_upload_and_practise_answer_file(file_id, filename, path) VALUES ('$file_id', '$filename', '$path')";
 		
 			$insertUpdateResult = mysqli_query($connection, $insert_sql);
 			
 			//header("Location: $link");
 			
-			include 'topheader.php';
+			
 			?>
 			
 			<div class="container-fluid">
 			
-					<form class="form" action="solve_later_insert.php" method="post">
+					<form class="form" action="z_upload_and_insert_result.php" method="post">
                     <div class="row">
-						<input type="hidden" name="file_id" value="<?php echo $newfile_id; ?>" />
+						<input type="hidden" name="file_id" value="<?php echo $file_id; ?>" />
 						<br/>
 
 						<span style="text-align:center"><h2>Upload Answer</h2></span>
@@ -225,22 +225,15 @@
 							</div>
 							<?php 
 								
-                                $sql1 = "SELECT * from upload_answer where file_id=$newfile_id AND is_correct IS NULL AND ( answer_opted ='A' OR answer_opted ='B' OR answer_opted ='C' OR answer_opted ='D') ";
-                               
-                                $result1= mysqli_query($connection, $sql1);
-                                while ($row1 = mysqli_fetch_assoc($result1))
-                                {
-                                    $x =  $row1['question_number'];
-                                   
-							//	$x = 1;
+								$x = 1;
 
-							//	while($x <= 100) 
-								//{
+								while($x <= 100) 
+								{
 									  echo '<div class="row">';
 										echo '<div class="col-sm-2">';
 												echo $x.') ';
 										echo ' </div>';
-										$sql = "select * from upload_answer where question_number=$x and file_id=$newfile_id";
+										$sql = "select answer_opted from z_upload_answer where question_number=$x";
 
 	//$user = 'Manish'; //take it from session
 	

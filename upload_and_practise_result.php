@@ -157,22 +157,17 @@
 						<br/>
 						<input type="hidden" name="file_id" value="<?php echo $file_id; ?>" />
 						<br/>
-						<br/>
-						<br/>
-						
-						<form class="form" action="upload_and_see_answer.php" method="post" enctype="multipart/form-data" >
 						<div class="row">
-							
+							<form class="form" action="upload_and_see_answer.php" method="post" enctype="multipart/form-data" >
 								<div class="col-sm-3">
 								<input type="file" name="photo" id="fileSelect" class="form-control">
 								</div>
 								<div class="col-sm-3">
 								<input type="submit" name="submit" value="Upload" class="btn btn-primary">
 								</div>
-							
+							</form>
 							
 						</div>
-						</form>
 					</div>
 					<br/>
                 </div>

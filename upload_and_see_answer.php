@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -112,7 +113,7 @@
 
 <?php
 	//echo "Uploading..";
-	
+	include 'topheader.php';
 		session_start();
 									
 	if(isset($_SESSION['user_email']))
@@ -163,7 +164,7 @@
 		{
 			//echo "The file ". basename( $_FILES['file']['name']). " is uploaded";
 			
-			$path = "http://www.shinebee.in/".$targetfolder;
+			$path = "https://www.shineb.in/".$targetfolder;
 			
 				$servername = "localhost";
 				$username = "hvlias";
@@ -183,7 +184,7 @@
 			
 			//header("Location: $link");
 			
-			include 'topheader.php';
+			
 			?>
 			
 			<div class="container-fluid">
